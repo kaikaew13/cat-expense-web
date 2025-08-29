@@ -9,6 +9,8 @@ const AddExpenseDialog = ({
   setIsDialogOpen,
   expenseList,
   setExpenseList,
+  initData,
+  setInitData,
 }) => {
   const [catFact, setCatFact] = useState('');
   const [itemName, setItemName] = useState('');
@@ -16,28 +18,46 @@ const AddExpenseDialog = ({
   const [itemAmount, setItemAmount] = useState('');
 
   const handleClose = () => {
-    document.getElementById('addExpenseDialog').close();
+    document.getElementById('expenseDialog').close();
     setIsDialogOpen(false);
     setCatFact('');
     setItemName('');
     setItemCategory('');
     setItemAmount('');
+    setInitData(null);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const newExpense = {
-      Id: generateRandomId(),
-      Item: itemName,
-      Category: itemCategory,
-      Amount: parseFloat(itemAmount),
-      IsChecked: false,
-    };
+    if (!initData) {
+      const newExpense = {
+        Id: generateRandomId(),
+        Item: itemName,
+        Category: itemCategory,
+        Amount: parseFloat(itemAmount),
+        IsChecked: false,
+      };
 
-    const newExpenseList = [...expenseList, newExpense];
-    localStorage.setItem('expenseList', JSON.stringify(newExpenseList));
-    setExpenseList(newExpenseList);
+      const newExpenseList = [...expenseList, newExpense];
+      localStorage.setItem('expenseList', JSON.stringify(newExpenseList));
+      setExpenseList(newExpenseList);
+    } else {
+      const updatedExpenseList = expenseList.map((each) => {
+        if (each.Id === initData.Id) {
+          return {
+            ...each,
+            Item: itemName,
+            Category: itemCategory,
+            Amount: parseFloat(itemAmount),
+          };
+        } else return each;
+      });
+
+      localStorage.setItem('expenseList', JSON.stringify(updatedExpenseList));
+      setExpenseList(updatedExpenseList);
+    }
+
     handleClose();
   };
 
@@ -55,8 +75,16 @@ const AddExpenseDialog = ({
     }
   }, [isDialogOpen]);
 
+  useEffect(() => {
+    if (initData) {
+      setItemName(initData.Item);
+      setItemCategory(initData.Category);
+      setItemAmount(initData.Amount);
+    }
+  }, [initData]);
+
   return (
-    <dialog id='addExpenseDialog' className='modal'>
+    <dialog id='expenseDialog' className='modal'>
       <div className='modal-box max-w-full w-[65%]'>
         <form method='dialog'>
           <button
@@ -67,7 +95,11 @@ const AddExpenseDialog = ({
         </form>
         <div className='flex items-center justify-evenly '>
           <div className='w-[50%] mx-4 mr-2'>
-            <h3 className='font-bold mb-6'>Add New Expense</h3>
+            {!initData ? (
+              <h3 className='font-bold mb-6'>Add New Expense</h3>
+            ) : (
+              <h3 className='font-bold mb-6'>Update Expense</h3>
+            )}
             <form onSubmit={(e) => handleSubmit(e)}>
               <fieldset className='fieldset'>
                 <div className='flex justify-between items-center mb-2'>

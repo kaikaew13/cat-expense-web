@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
+import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const ExpenseList = ({ expenseList, setExpenseList }) => {
+const ExpenseList = ({
+  expenseList,
+  setExpenseList,
+  setInitData,
+  toggleDialog,
+}) => {
   const [isCheckedAll, setIsCheckedAll] = useState(false);
 
   let maxAmount = 0;
@@ -43,6 +50,7 @@ const ExpenseList = ({ expenseList, setExpenseList }) => {
             <th className='w-[60%] '>Item</th>
             <th className=''>Category</th>
             <th className=''>Amount</th>
+            <th></th>
           </tr>
         </thead>
         <tbody className='text-base-content w-full'>
@@ -92,6 +100,16 @@ const ExpenseList = ({ expenseList, setExpenseList }) => {
                 <td className='w-[60%] opacity-60'>{each.Item}</td>
                 <td className='opacity-60'>{each.Category}</td>
                 <td className='opacity-60'>{`${each.Amount.toFixed(2)}$`}</td>
+                <td>
+                  <button
+                    className='hover:cursor-pointer opacity-60'
+                    onClick={() => {
+                      setInitData(each);
+                      toggleDialog();
+                    }}>
+                    <FontAwesomeIcon icon={faPenToSquare} />
+                  </button>
+                </td>
               </tr>
             ))
           )}
