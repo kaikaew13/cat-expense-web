@@ -1,12 +1,51 @@
+import { useState } from 'react';
+
 import ExpenseList from './components/ExpenseList';
 import Button from './components/Button';
 import AddExpenseDialog from './components/AddExpenseDialog';
-import { useState } from 'react';
+
+export const generateRandomId = () => {
+  return Math.random()
+    .toString(36)
+    .substring(2, 10 + 2);
+};
+
+export let dummy = [
+  {
+    Id: generateRandomId(),
+    Item: 'Hello world',
+    Category: 'Food',
+    Amount: 10,
+    IsChecked: false,
+  },
+  {
+    Id: generateRandomId(),
+    Item: 'Goodbye world',
+    Category: 'Accomodation',
+    Amount: 10,
+    IsChecked: false,
+  },
+  {
+    Id: generateRandomId(),
+    Item: 'Hello moon',
+    Category: 'Food',
+    Amount: 1000,
+    IsChecked: false,
+  },
+];
 
 function App() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [expenseList, setExpenseList] = useState(dummy);
 
-  console.log(isDialogOpen);
+  const handleDelete = () => {
+    const newExpenseList = expenseList.filter((each) => !each.IsChecked);
+
+    dummy = [...newExpenseList];
+    console.log(dummy);
+
+    setExpenseList(newExpenseList);
+  };
 
   return (
     <>
@@ -19,9 +58,9 @@ function App() {
           className='mr-4'>
           Add Expense
         </Button>
-        <Button>Delete Expense</Button>
+        <Button onClick={handleDelete}>Delete Expense</Button>
       </div>
-      <ExpenseList />
+      <ExpenseList expenseList={expenseList} setExpenseList={setExpenseList} />
       <AddExpenseDialog
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}

@@ -1,8 +1,37 @@
 import { useEffect, useState } from 'react';
+
 import Button from './Button';
+import { dummy, generateRandomId } from '../App';
 
 const AddExpenseDialog = ({ isDialogOpen, setIsDialogOpen }) => {
   const [catFact, setCatFact] = useState('');
+  const [itemName, setItemName] = useState('');
+  const [itemCategory, setItemCategory] = useState('');
+  const [itemAmount, setItemAmount] = useState('');
+
+  const handleClose = () => {
+    document.getElementById('addExpenseDialog').close();
+    setIsDialogOpen(false);
+    setCatFact('');
+    setItemName('');
+    setItemCategory('');
+    setItemAmount('');
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newExpense = {
+      Id: generateRandomId(),
+      Item: itemName,
+      Category: itemCategory,
+      Amount: parseFloat(itemAmount),
+      IsChecked: false,
+    };
+
+    dummy.push(newExpense);
+    handleClose();
+  };
 
   useEffect(() => {
     if (isDialogOpen) {
@@ -20,66 +49,74 @@ const AddExpenseDialog = ({ isDialogOpen, setIsDialogOpen }) => {
 
   return (
     <dialog id='addExpenseDialog' className='modal'>
-      <div className='modal-box max-w-full w-[75%]'>
+      <div className='modal-box max-w-full w-[65%]'>
         <form method='dialog'>
           <button
-            onClick={() => {
-              setIsDialogOpen(false);
-              setCatFact('');
-            }}
+            onClick={() => handleClose()}
             className='btn btn-sm btn-circle btn-ghost absolute right-2 top-2'>
             ✕
           </button>
         </form>
         <div className='flex items-center justify-evenly '>
-          <div className='w-[50%] m-4 mr-2'>
+          <div className='w-[50%] mx-4 mr-2'>
             <h3 className='font-bold mb-6'>Add New Expense!</h3>
-            <fieldset className='fieldset'>
-              <div className='flex justify-between items-center mb-2'>
-                <label htmlFor='item' className='font-bold text-sm'>
-                  Item:
-                </label>
-                <input
-                  type='text'
-                  id='item'
-                  required
-                  placeholder='Item Name'
-                  className='input text-sm w-[75%]'
-                />
-              </div>
-              <div className='flex justify-between items-center mb-2'>
-                <label htmlFor='category' className='font-bold text-sm'>
-                  Category:
-                </label>
-                <select
-                  id='category'
-                  defaultValue='Category'
-                  required
-                  className='select text-sm w-[75%]'>
-                  <option disabled={true}>Category</option>
-                  <option>Food</option>
-                  <option>Furniture</option>
-                  <option>Accessory</option>
-                </select>
-              </div>
-              <div className='flex justify-between items-center mb-2'>
-                <label htmlFor='amount' className='font-bold text-sm'>
-                  Amount:
-                </label>
-                <input
-                  type='text'
-                  id='amount'
-                  required
-                  placeholder='Item Amount'
-                  className='input text-sm w-[75%]'
-                />
-              </div>
-              <div className='flex justify-end items-center'>
-                <Button onClick={() => {}}>Submit</Button>
-              </div>
-            </fieldset>
+            <form onSubmit={(e) => handleSubmit(e)}>
+              <fieldset className='fieldset'>
+                <div className='flex justify-between items-center mb-2'>
+                  <label htmlFor='item' className='font-bold text-sm'>
+                    Item:
+                  </label>
+                  <input
+                    type='text'
+                    id='item'
+                    required
+                    placeholder='Item Name'
+                    className='input text-sm w-[75%]'
+                    value={itemName}
+                    onChange={(e) => {
+                      setItemName(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className='flex justify-between items-center mb-2'>
+                  <label htmlFor='category' className='font-bold text-sm'>
+                    Category:
+                  </label>
+                  <select
+                    id='category'
+                    required
+                    className='select text-sm w-[75%]'
+                    value={itemCategory}
+                    onChange={(e) => setItemCategory(e.target.value)}>
+                    <option disabled value=''>
+                      Category
+                    </option>
+                    <option value='Food'>Food</option>
+                    <option value='Furniture'>Furniture</option>
+                    <option value='Accessory'>Accessory</option>
+                  </select>
+                </div>
+                <div className='flex justify-between items-center mb-2'>
+                  <label htmlFor='amount' className='font-bold text-sm'>
+                    Amount:
+                  </label>
+                  <input
+                    type='number'
+                    id='amount'
+                    required
+                    placeholder='Item Amount'
+                    className='input text-sm w-[75%]'
+                    value={itemAmount}
+                    onChange={(e) => setItemAmount(e.target.value)}
+                  />
+                </div>
+                <div className='flex justify-end items-center'>
+                  <Button>Submit</Button>
+                </div>
+              </fieldset>
+            </form>
           </div>
-          <div className='w-[40%] m-4 ml-2'>
+          <div className='w-[40%] mx-4 ml-2'>
             <h3 className='font-bold text-base mb-6 text-primary italic'>
               Random cat facts:
             </h3>
@@ -92,13 +129,7 @@ const AddExpenseDialog = ({ isDialogOpen, setIsDialogOpen }) => {
         </div>
       </div>
       <form method='dialog' className='modal-backdrop'>
-        <button
-          onClick={() => {
-            setIsDialogOpen(false);
-            setCatFact('');
-          }}>
-          close
-        </button>
+        <button onClick={() => handleClose()}>close</button>
       </form>
     </dialog>
   );
