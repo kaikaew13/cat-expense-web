@@ -1,35 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import ExpenseList from './components/ExpenseList';
+import Button from './components/Button';
+import AddExpenseDialog from './components/AddExpenseDialog';
+import { useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  console.log(isDialogOpen);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className='m-auto mt-6 w-[60%] '>
+        <Button
+          onClick={() => {
+            document.getElementById('addExpenseDialog').showModal();
+            setIsDialogOpen(true);
+          }}
+          className='mr-4'>
+          Add Expense
+        </Button>
+        <Button>Delete Expense</Button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <ExpenseList />
+      <AddExpenseDialog
+        isDialogOpen={isDialogOpen}
+        setIsDialogOpen={setIsDialogOpen}
+      />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
