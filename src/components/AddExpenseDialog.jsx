@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react';
 
 import Button from './Button';
-import { dummy, generateRandomId } from '../App';
+import { dummy } from '../App';
+import { categoryTypes } from '../constants';
+import { generateRandomId } from '../utils/helpers';
 
-const AddExpenseDialog = ({ isDialogOpen, setIsDialogOpen }) => {
+const AddExpenseDialog = ({
+  isDialogOpen,
+  setIsDialogOpen,
+  setExpenseList,
+}) => {
   const [catFact, setCatFact] = useState('');
   const [itemName, setItemName] = useState('');
   const [itemCategory, setItemCategory] = useState('');
@@ -30,6 +36,7 @@ const AddExpenseDialog = ({ isDialogOpen, setIsDialogOpen }) => {
     };
 
     dummy.push(newExpense);
+    setExpenseList((prev) => [...prev, newExpense]);
     handleClose();
   };
 
@@ -59,7 +66,7 @@ const AddExpenseDialog = ({ isDialogOpen, setIsDialogOpen }) => {
         </form>
         <div className='flex items-center justify-evenly '>
           <div className='w-[50%] mx-4 mr-2'>
-            <h3 className='font-bold mb-6'>Add New Expense!</h3>
+            <h3 className='font-bold mb-6'>Add New Expense</h3>
             <form onSubmit={(e) => handleSubmit(e)}>
               <fieldset className='fieldset'>
                 <div className='flex justify-between items-center mb-2'>
@@ -91,9 +98,9 @@ const AddExpenseDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                     <option disabled value=''>
                       Category
                     </option>
-                    <option value='Food'>Food</option>
-                    <option value='Furniture'>Furniture</option>
-                    <option value='Accessory'>Accessory</option>
+                    <option value='Food'>{categoryTypes.FOOD}</option>
+                    <option value='Furniture'>{categoryTypes.FURNITURE}</option>
+                    <option value='Accessory'>{categoryTypes.ACCESSORY}</option>
                   </select>
                 </div>
                 <div className='flex justify-between items-center mb-2'>
@@ -117,7 +124,7 @@ const AddExpenseDialog = ({ isDialogOpen, setIsDialogOpen }) => {
             </form>
           </div>
           <div className='w-[40%] mx-4 ml-2'>
-            <h3 className='font-bold text-base mb-6 text-primary italic'>
+            <h3 className='font-bold mb-6 text-primary italic'>
               Random cat facts:
             </h3>
             {catFact === '' ? (

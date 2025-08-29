@@ -8,7 +8,7 @@ const ExpenseList = ({ expenseList, setExpenseList }) => {
 
   return (
     <>
-      <table className='table bg-base-200 rounded rounded-box shadow-md w-[60%] m-auto mt-6'>
+      <table className='table bg-base-200 rounded rounded-box shadow-md w-[60%] m-auto mt-6 overflow-hidden'>
         <thead>
           <tr>
             <th></th>
