@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
 import Button from './Button';
-import { dummy } from '../App';
 import { categoryTypes } from '../constants';
 import { generateRandomId } from '../utils/helpers';
 
 const AddExpenseDialog = ({
   isDialogOpen,
   setIsDialogOpen,
+  expenseList,
   setExpenseList,
 }) => {
   const [catFact, setCatFact] = useState('');
@@ -35,8 +35,9 @@ const AddExpenseDialog = ({
       IsChecked: false,
     };
 
-    dummy.push(newExpense);
-    setExpenseList((prev) => [...prev, newExpense]);
+    const newExpenseList = [...expenseList, newExpense];
+    localStorage.setItem('expenseList', JSON.stringify(newExpenseList));
+    setExpenseList(newExpenseList);
     handleClose();
   };
 
@@ -95,7 +96,7 @@ const AddExpenseDialog = ({
                     className='select text-sm w-[75%]'
                     value={itemCategory}
                     onChange={(e) => setItemCategory(e.target.value)}>
-                    <option disabled value=''>
+                    <option disabled value='' className='opacity-60'>
                       Category
                     </option>
                     <option value='Food'>{categoryTypes.FOOD}</option>
@@ -109,6 +110,8 @@ const AddExpenseDialog = ({
                   </label>
                   <input
                     type='number'
+                    min={0}
+                    step={0.01}
                     id='amount'
                     required
                     placeholder='Item Amount'
