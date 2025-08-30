@@ -6,7 +6,7 @@ import {
   faSortUp,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { sortTypes } from '../constants';
+import { categoryTypes, sortTypes } from '../constants';
 
 const ExpenseList = ({
   unsortedList,
@@ -20,12 +20,35 @@ const ExpenseList = ({
   const [categorySort, setCategorySort] = useState(sortTypes.NO_SORT);
   const [amountSort, setAmountSort] = useState(sortTypes.NO_SORT);
 
-  let maxAmount = 0;
+  const totals = [
+    {
+      Category: categoryTypes.FOOD,
+      Total: 0,
+    },
+    {
+      Category: categoryTypes.FURNITURE,
+      Total: 0,
+    },
+    {
+      Category: categoryTypes.ACCESSORY,
+      Total: 0,
+    },
+  ];
+
   expenseList.forEach((each) => {
-    if (each.Amount > maxAmount) {
-      maxAmount = each.Amount;
+    if (each.Category === categoryTypes.FOOD) {
+      totals[0].Total += each.Amount;
+    } else if (each.Category === categoryTypes.FURNITURE) {
+      totals[1].Total += each.Amount;
+    } else {
+      totals[2].Total += each.Amount;
     }
   });
+
+  totals.sort((a, b) => -1 * (a.Total - b.Total));
+  const topCategory = totals
+    .filter((each) => each.Total === totals[0].Total)
+    .map((each) => each.Category);
 
   const sortByItem = () => {
     const next = (itemSort + 1) % 3;
@@ -188,10 +211,7 @@ const ExpenseList = ({
               <tr
                 key={each.Id}
                 className={`list-row 
-                  ${
-                    maxAmount.toFixed(2) === each.Amount.toFixed(2) &&
-                    'bg-base-300'
-                  }
+                  ${topCategory.includes(each.Category) && 'bg-base-300'}
                 `}>
                 <th>
                   <input
@@ -222,7 +242,7 @@ const ExpenseList = ({
                 </th>
                 <td className='w-[60%] opacity-60'>{each.Item}</td>
                 <td className='opacity-60'>{each.Category}</td>
-                <td className='opacity-60'>{`${each.Amount.toFixed(2)}$`}</td>
+                <td className='opacity-60'>{`${each.Amount}$`}</td>
                 <td>
                   <button
                     className='hover:cursor-pointer opacity-60'

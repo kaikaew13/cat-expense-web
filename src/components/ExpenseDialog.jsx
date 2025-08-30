@@ -143,7 +143,6 @@ const AddExpenseDialog = ({
                   <input
                     type='number'
                     min={0}
-                    step={0.01}
                     id='amount'
                     required
                     placeholder='Item Amount'
