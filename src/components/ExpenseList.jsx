@@ -17,6 +17,7 @@ const ExpenseList = ({
 }) => {
   const [isCheckedAll, setIsCheckedAll] = useState(false);
   const [itemSort, setItemSort] = useState(sortTypes.NO_SORT);
+  const [categorySort, setCategorySort] = useState(sortTypes.NO_SORT);
   const [amountSort, setAmountSort] = useState(sortTypes.NO_SORT);
 
   let maxAmount = 0;
@@ -42,6 +43,26 @@ const ExpenseList = ({
     }
 
     setAmountSort(sortTypes.NO_SORT);
+    setCategorySort(sortTypes.NO_SORT);
+  };
+
+  const sortByCategory = () => {
+    const next = (categorySort + 1) % 3;
+    setCategorySort(next);
+    if (next === sortTypes.NO_SORT) {
+      setExpenseList([...unsortedList]);
+    } else if (next === sortTypes.ASC) {
+      const newExpenseList = [...expenseList];
+      newExpenseList.sort((a, b) => a.Category.localeCompare(b.Category));
+      setExpenseList(newExpenseList);
+    } else {
+      const newExpenseList = [...expenseList];
+      newExpenseList.sort((a, b) => -1 * a.Category.localeCompare(b.Category));
+      setExpenseList(newExpenseList);
+    }
+
+    setItemSort(sortTypes.NO_SORT);
+    setAmountSort(sortTypes.NO_SORT);
   };
 
   const sortByAmount = () => {
@@ -60,6 +81,7 @@ const ExpenseList = ({
     }
 
     setItemSort(sortTypes.NO_SORT);
+    setCategorySort(sortTypes.NO_SORT);
   };
 
   useEffect(() => {
@@ -70,6 +92,7 @@ const ExpenseList = ({
 
   useEffect(() => {
     setItemSort(sortTypes.NO_SORT);
+    setCategorySort(sortTypes.NO_SORT);
     setAmountSort(sortTypes.NO_SORT);
     setExpenseList([...unsortedList]);
   }, [unsortedList]);
@@ -98,7 +121,7 @@ const ExpenseList = ({
                 className='checkbox w-4 h-4'
               />
             </th>
-            <th className='w-[60%] flex'>
+            <th className='w-[50%] flex'>
               <p className='mr-2'>Item</p>
               <button
                 className='hover:cursor-pointer opacity-60'
@@ -114,22 +137,41 @@ const ExpenseList = ({
                 />
               </button>
             </th>
-            <th className=''>Category</th>
-            <th className='flex'>
-              <p className='mr-2'>Amount</p>
-              <button
-                className='hover:cursor-pointer opacity-60'
-                onClick={() => sortByAmount()}>
-                <FontAwesomeIcon
-                  icon={
-                    amountSort === sortTypes.NO_SORT
-                      ? faSort
-                      : amountSort === sortTypes.ASC
-                      ? faSortUp
-                      : faSortDown
-                  }
-                />
-              </button>
+            <th>
+              <div className='flex'>
+                <p className='mr-2'>Category</p>
+                <button
+                  className='hover:cursor-pointer opacity-60'
+                  onClick={() => sortByCategory()}>
+                  <FontAwesomeIcon
+                    icon={
+                      categorySort === sortTypes.NO_SORT
+                        ? faSort
+                        : categorySort === sortTypes.ASC
+                        ? faSortUp
+                        : faSortDown
+                    }
+                  />
+                </button>
+              </div>
+            </th>
+            <th>
+              <div className='flex'>
+                <p className='mr-2'>Amount</p>
+                <button
+                  className='hover:cursor-pointer opacity-60'
+                  onClick={() => sortByAmount()}>
+                  <FontAwesomeIcon
+                    icon={
+                      amountSort === sortTypes.NO_SORT
+                        ? faSort
+                        : amountSort === sortTypes.ASC
+                        ? faSortUp
+                        : faSortDown
+                    }
+                  />
+                </button>
+              </div>
             </th>
             <th></th>
           </tr>
