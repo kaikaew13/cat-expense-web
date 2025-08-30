@@ -1,14 +1,23 @@
 import { useEffect, useState } from 'react';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
+import {
+  faSort,
+  faSortDown,
+  faSortUp,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { sortTypes } from '../constants';
 
 const ExpenseList = ({
+  unsortedList,
   expenseList,
   setExpenseList,
   setInitData,
   toggleDialog,
 }) => {
   const [isCheckedAll, setIsCheckedAll] = useState(false);
+  const [itemSort, setItemSort] = useState(sortTypes.NO_SORT);
+  const [amountSort, setAmountSort] = useState(sortTypes.NO_SORT);
 
   let maxAmount = 0;
   expenseList.forEach((each) => {
@@ -17,11 +26,53 @@ const ExpenseList = ({
     }
   });
 
+  const sortByItem = () => {
+    const next = (itemSort + 1) % 3;
+    setItemSort(next);
+    if (next === sortTypes.NO_SORT) {
+      setExpenseList([...unsortedList]);
+    } else if (next === sortTypes.ASC) {
+      const newExpenseList = [...expenseList];
+      newExpenseList.sort((a, b) => a.Item.localeCompare(b.Item));
+      setExpenseList(newExpenseList);
+    } else {
+      const newExpenseList = [...expenseList];
+      newExpenseList.sort((a, b) => -1 * a.Item.localeCompare(b.Item));
+      setExpenseList(newExpenseList);
+    }
+
+    setAmountSort(sortTypes.NO_SORT);
+  };
+
+  const sortByAmount = () => {
+    const next = (amountSort + 1) % 3;
+    setAmountSort(next);
+    if (next === sortTypes.NO_SORT) {
+      setExpenseList([...unsortedList]);
+    } else if (next === sortTypes.ASC) {
+      const newExpenseList = [...expenseList];
+      newExpenseList.sort((a, b) => a.Amount - b.Amount);
+      setExpenseList(newExpenseList);
+    } else {
+      const newExpenseList = [...expenseList];
+      newExpenseList.sort((a, b) => -1 * (a.Amount - b.Amount));
+      setExpenseList(newExpenseList);
+    }
+
+    setItemSort(sortTypes.NO_SORT);
+  };
+
   useEffect(() => {
     if (expenseList.length === 0) {
       setIsCheckedAll(false);
     }
   }, [expenseList]);
+
+  useEffect(() => {
+    setItemSort(sortTypes.NO_SORT);
+    setAmountSort(sortTypes.NO_SORT);
+    setExpenseList([...unsortedList]);
+  }, [unsortedList]);
 
   return (
     <>
@@ -47,9 +98,39 @@ const ExpenseList = ({
                 className='checkbox w-4 h-4'
               />
             </th>
-            <th className='w-[60%] '>Item</th>
+            <th className='w-[60%] flex'>
+              <p className='mr-2'>Item</p>
+              <button
+                className='hover:cursor-pointer opacity-60'
+                onClick={() => sortByItem()}>
+                <FontAwesomeIcon
+                  icon={
+                    itemSort === sortTypes.NO_SORT
+                      ? faSort
+                      : itemSort === sortTypes.ASC
+                      ? faSortUp
+                      : faSortDown
+                  }
+                />
+              </button>
+            </th>
             <th className=''>Category</th>
-            <th className=''>Amount</th>
+            <th className='flex'>
+              <p className='mr-2'>Amount</p>
+              <button
+                className='hover:cursor-pointer opacity-60'
+                onClick={() => sortByAmount()}>
+                <FontAwesomeIcon
+                  icon={
+                    amountSort === sortTypes.NO_SORT
+                      ? faSort
+                      : amountSort === sortTypes.ASC
+                      ? faSortUp
+                      : faSortDown
+                  }
+                />
+              </button>
+            </th>
             <th></th>
           </tr>
         </thead>

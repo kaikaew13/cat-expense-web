@@ -6,17 +6,23 @@ import ExpenseDialog from './components/ExpenseDialog';
 
 function App() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [expenseList, setExpenseList] = useState(() => {
+  const [unsortedList, setUnsortedList] = useState(() => {
     const list = localStorage.getItem('expenseList');
     return list ? JSON.parse(list) : [];
   });
+  const [expenseList, setExpenseList] = useState(unsortedList);
   const [initData, setInitData] = useState(null);
 
   const handleDelete = () => {
-    const newExpenseList = expenseList.filter((each) => !each.IsChecked);
+    const tmpList = expenseList.filter((each) => !each.IsChecked);
+    if (tmpList.length === expenseList.length) return;
 
-    localStorage.setItem('expenseList', JSON.stringify(newExpenseList));
-    setExpenseList(newExpenseList);
+    const newUnsortedList = unsortedList.filter((each) =>
+      tmpList.includes(each)
+    );
+
+    localStorage.setItem('expenseList', JSON.stringify(newUnsortedList));
+    setUnsortedList(newUnsortedList);
   };
 
   const toggleDialog = () => {
@@ -34,6 +40,7 @@ function App() {
         <Button onClick={handleDelete}>Delete Expense</Button>
       </div>
       <ExpenseList
+        unsortedList={unsortedList}
         expenseList={expenseList}
         setExpenseList={setExpenseList}
         setInitData={setInitData}
@@ -42,8 +49,8 @@ function App() {
       <ExpenseDialog
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}
-        expenseList={expenseList}
-        setExpenseList={setExpenseList}
+        unsortedList={unsortedList}
+        setUnsortedList={setUnsortedList}
         initData={initData}
         setInitData={setInitData}
       />

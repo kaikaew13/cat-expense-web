@@ -7,8 +7,8 @@ import { generateRandomId } from '../utils/helpers';
 const AddExpenseDialog = ({
   isDialogOpen,
   setIsDialogOpen,
-  expenseList,
-  setExpenseList,
+  unsortedList,
+  setUnsortedList,
   initData,
   setInitData,
 }) => {
@@ -39,11 +39,11 @@ const AddExpenseDialog = ({
         IsChecked: false,
       };
 
-      const newExpenseList = [...expenseList, newExpense];
-      localStorage.setItem('expenseList', JSON.stringify(newExpenseList));
-      setExpenseList(newExpenseList);
+      const newUnsortedList = [...unsortedList, newExpense];
+      localStorage.setItem('expenseList', JSON.stringify(newUnsortedList));
+      setUnsortedList(newUnsortedList);
     } else {
-      const updatedExpenseList = expenseList.map((each) => {
+      const updatedExpenseList = unsortedList.map((each) => {
         if (each.Id === initData.Id) {
           return {
             ...each,
@@ -55,7 +55,7 @@ const AddExpenseDialog = ({
       });
 
       localStorage.setItem('expenseList', JSON.stringify(updatedExpenseList));
-      setExpenseList(updatedExpenseList);
+      setUnsortedList(updatedExpenseList);
     }
 
     handleClose();
@@ -69,7 +69,7 @@ const AddExpenseDialog = ({
           const data = await res.json();
           setCatFact(data.fact);
         } catch (err) {
-          setCatFact('Cats are cool!');
+          setCatFact('Cats are cool! (Failed to fetch API)');
         }
       })();
     }
